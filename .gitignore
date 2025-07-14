@@ -1,0 +1,50 @@
+# Node modules
+node_modules/
+
+# PM2 logs and dumps
+.pids/
+pids/
+.pm2/
+*.log
+*.pid
+dump.pm2
+
+# dotenv / sensitive files
+.env
+.env.local
+.env.*.local
+
+# OS specific
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# npm cache
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# nvm
+.nvmrc
+
+# Compiled output
+dist/
+build/
+
+# IDEs/editors
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Git files backup
+*.orig
+
+# Others (optional)
+coverage/
+*.tgz
+*.swp
+*.bak
