@@ -1,0 +1,1 @@
+npm install -g pm2@1.1.3 --legacy-peer-deps --no-optional

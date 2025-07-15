@@ -7,7 +7,9 @@ var app = express();
 var port = 5000;
 
 // Import Datbase connection
-var db = require("./config/database.config.js");
+var db = require("./controllers/databaseController.controller.js");
+
+db.connectAsync();
 
 // Import my routes
 var userRoutes = require("./routes/userRoutes.routes.js");

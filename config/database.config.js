@@ -31,7 +31,7 @@ Bluebird.promisifyAll(connectionFromPool);
 
 // Blubird mere connection.connect method ko promisify kardo
 // Because connect is a method of the connection object, we bind it so this inside connect() refers to the correct context (connection).
-var connectAsync = Bluebird.promisify(connectionFromPool.getConnection).bind(connectionFromPool);
+// var connectAsync = Bluebird.promisify(connectionFromPool.getConnection).bind(connectionFromPool);
 // connectAsync humme ek promise return karega which we can use to resolve or reject
 // Original connect() humara callback based hain, Usko humne promisify kiya hai
 
@@ -69,6 +69,7 @@ connectAsync()
   });
   */
 
+  /*
 connectAsync()
   .then(function () {
     console.log("Database connected successfully");
@@ -76,6 +77,7 @@ connectAsync()
   .catch(function (error) {
     console.log("Error connecting to database: " + error);
   });
+  */
 
 module.exports = connectionFromPool;
 
