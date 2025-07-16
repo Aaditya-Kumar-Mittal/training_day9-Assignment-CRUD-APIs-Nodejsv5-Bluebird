@@ -16,7 +16,7 @@ exports.getWalletByUserId = function (req, res) {
   }
 
   dbController
-    .query("SELECT * FROM users_wallet WHERE user_id = ?", [userId])
+    .query("SELECT * FROM users_wallet1 WHERE user_id = ?", [userId])
     .then(function (result) {
       if (result.length === 0) {
         return reqResponse.sendResponse(
@@ -72,7 +72,7 @@ exports.creditInWallet = function (req, res) {
       .beginTransactionAsync()
       .then(function () {
         return conn.queryAsync(
-          "SELECT balance FROM users_wallet WHERE user_id = ?",
+          "SELECT balance FROM users_wallet1 WHERE user_id = ?",
           [userId]
         );
       })
@@ -80,14 +80,14 @@ exports.creditInWallet = function (req, res) {
         if (result.length === 0) {
           // Wallet does not exist, create to add amount
           return conn.queryAsync(
-            "INSERT INTO users_wallet (user_id, balance) VALUES (?, ?)",
+            "INSERT INTO users_wallet1 (user_id, balance) VALUES (?, ?)",
             [userId, amount]
           );
         } else {
           var currentBalance = parseFloat(result[0].balance);
           var newBalance = currentBalance + amount;
           return conn.queryAsync(
-            "UPDATE users_wallet SET balance = ? WHERE user_id = ?",
+            "UPDATE users_wallet1 SET balance = ? WHERE user_id = ?",
             [newBalance, userId]
           );
         }
@@ -148,7 +148,7 @@ exports.debitFromWallet = function (req, res) {
       .beginTransactionAsync()
       .then(function () {
         return conn.queryAsync(
-          "SELECT balance FROM users_wallet WHERE user_id = ?",
+          "SELECT balance FROM users_wallet1 WHERE user_id = ?",
           [userId]
         );
       })
@@ -160,7 +160,7 @@ exports.debitFromWallet = function (req, res) {
 
         var newBalance = currentBalance - amount;
         return conn.queryAsync(
-          "UPDATE users_wallet SET balance = ? WHERE user_id = ?",
+          "UPDATE users_wallet1 SET balance = ? WHERE user_id = ?",
           [newBalance, userId]
         );
       })

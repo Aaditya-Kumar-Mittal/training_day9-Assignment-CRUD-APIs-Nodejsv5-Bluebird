@@ -9,7 +9,7 @@ var reqResponse = require("../utils/responseUtil.util.js");
 // GET API
 exports.getUsers = function (req, res) {
   dbController
-    .query("SELECT * FROM users WHERE isActive = ?", [1])
+    .query("SELECT * FROM users1 WHERE isActive = ?", [1])
     .then(function (results) {
       logger.logger("Fetched users successfully");
 
@@ -75,7 +75,7 @@ exports.getUserById = function (req, res) {
   }
 
   dbController
-    .query("SELECT * FROM users WHERE id = ? AND isActive = ?", [userId, 1])
+    .query("SELECT * FROM users1 WHERE id = ? AND isActive = ?", [userId, 1])
     .then(function (result) {
       if (result.length === 0) {
         // 404 Not Found
@@ -166,7 +166,7 @@ exports.createUser = function (req, res) {
     );
   } else {
     dbController
-      .query("INSERT INTO users(name, email) VALUES (?, ?)", [
+      .query("INSERT INTO users1(name, email) VALUES (?, ?)", [
         data.name,
         data.email,
       ])
@@ -259,7 +259,7 @@ exports.updateUser = function (req, res) {
   }
 
   dbController
-    .query("SELECT * FROM users WHERE id = ? AND isActive = ?", [userId, 1])
+    .query("SELECT * FROM users1 WHERE id = ? AND isActive = ?", [userId, 1])
     .then(function (result) {
       if (result.length === 0) {
         // 404 Not Found Response
@@ -274,7 +274,7 @@ exports.updateUser = function (req, res) {
       }
 
       return dbController.query(
-        "UPDATE users SET name = ?, email = ? WHERE id = ?",
+        "UPDATE users1 SET name = ?, email = ? WHERE id = ?",
         [data.name, data.email, userId]
       );
     })
@@ -330,7 +330,7 @@ exports.deleteUser = function (req, res) {
   }
 
   dbController
-    .query("SELECT * FROM users WHERE id = ? AND isActive = ?", [userId, 1])
+    .query("SELECT * FROM users1 WHERE id = ? AND isActive = ?", [userId, 1])
     .then(function (result) {
       if (result.length === 0) {
         // 404 Not Found Response
@@ -345,7 +345,9 @@ exports.deleteUser = function (req, res) {
       }
 
       return dbController
-        .query("UPDATE users SET isActive = 0 WHERE id = ? AND isActive = 1", [userId])
+        .query("UPDATE users1 SET isActive = 0 WHERE id = ? AND isActive = 1", [
+          userId,
+        ])
         .then(function (result) {
           logger.logger("User deleted successfully");
 
@@ -358,6 +360,72 @@ exports.deleteUser = function (req, res) {
             "The request has been fulfilled and has resulted in one or more existing resources being modified.",
             {
               id: userId,
+            }
+          );
+        });
+    })
+    .catch(function (error) {
+      if (!res.headersSent) {
+        logger.logger("Error deleting user: " + error);
+
+        // 500 Internal Server Error Response
+        reqResponse.sendResponse(
+          res,
+          500,
+          false,
+          "Failed to delete user",
+          "The server encountered an internal error: " + error.message
+        );
+      }
+    });
+};
+
+exports.recoverUser = function (req, res) {
+  var userEmail = req.body.email;
+
+  // If no user email is not given
+  if (!userEmail) {
+    logger.logger("User recovery failed (Invalid Data");
+
+    reqResponse.sendResponse(
+      res,
+      404,
+      false,
+      "Invalid user email",
+      "The request could not be performed as the user email is not valid."
+    );
+  }
+
+  // If user email is given then check if it present in the database
+  dbController
+    .query("SELECT * FROM users1 WHERE email = ?", [userEmail])
+    .then(function (result) {
+      if (result.length === 0) {
+        // 404 Not Found Response
+        logger.logger("Error updating user: User not found");
+        reqResponse.sendResponse(
+          res,
+          404,
+          false,
+          "User not found",
+          "The requested user does not exist."
+        );
+      }
+
+      return dbController
+        .query("UPDATE users1 SET isActive = 1 WHERE email = ?", [userEmail])
+        .then(function (result) {
+          logger.logger("User recovered successfully");
+
+          // 200 OK Response
+          reqResponse.sendResponse(
+            res,
+            200,
+            true,
+            "User recovered successfully",
+            "The request has been fulfilled and has resulted in one or more existing resources being modified.",
+            {
+              email: userEmail,
             }
           );
         });
