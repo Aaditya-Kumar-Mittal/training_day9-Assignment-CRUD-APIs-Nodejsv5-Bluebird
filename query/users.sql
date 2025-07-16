@@ -1,0 +1,7 @@
+USE testdb3;
+
+SHOW TABLES;
+
+SELECT * FROM users;
+
+ALTER TABLE users ADD COLUMN isActive BOOLEAN DEFAULT TRUE;

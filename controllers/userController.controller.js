@@ -9,7 +9,7 @@ var reqResponse = require("../utils/responseUtil.util.js");
 // GET API
 exports.getUsers = function (req, res) {
   dbController
-    .query("SELECT * FROM users")
+    .query("SELECT * FROM users WHERE isActive = ?", [1])
     .then(function (results) {
       logger.logger("Fetched users successfully");
 
@@ -75,7 +75,7 @@ exports.getUserById = function (req, res) {
   }
 
   dbController
-    .query("SELECT * FROM users WHERE id = ?", [userId])
+    .query("SELECT * FROM users WHERE id = ? AND isActive = ?", [userId, 1])
     .then(function (result) {
       if (result.length === 0) {
         // 404 Not Found
@@ -259,7 +259,7 @@ exports.updateUser = function (req, res) {
   }
 
   dbController
-    .query("SELECT * FROM users WHERE id = ?", [userId])
+    .query("SELECT * FROM users WHERE id = ? AND isActive = ?", [userId, 1])
     .then(function (result) {
       if (result.length === 0) {
         // 404 Not Found Response
@@ -330,7 +330,7 @@ exports.deleteUser = function (req, res) {
   }
 
   dbController
-    .query("SELECT * FROM users WHERE id = ?", [userId])
+    .query("SELECT * FROM users WHERE id = ? AND isActive = ?", [userId, 1])
     .then(function (result) {
       if (result.length === 0) {
         // 404 Not Found Response
@@ -345,7 +345,7 @@ exports.deleteUser = function (req, res) {
       }
 
       return dbController
-        .query("DELETE FROM users WHERE id = ?", [userId])
+        .query("UPDATE users SET isActive = 0 WHERE id = ? AND isActive = 1", [userId])
         .then(function (result) {
           logger.logger("User deleted successfully");
 
